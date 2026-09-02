@@ -1,229 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>D-Chat</title>
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     body {
-      background-color: #f7f9fa;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8fafc;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      padding: 24px 16px;
     }
-    .container {
-      width: 100%;
-      max-width: 420px;
+    .card {
       background: #ffffff;
       padding: 24px;
       border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 400px;
     }
-    h2 {
+    h1 {
       font-size: 20px;
-      color: #1f2937;
-      margin-bottom: 4px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 6px 0;
     }
-    p.subtitle {
+    .subtitle {
       font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 24px;
+      color: #64748b;
+      margin: 0 0 20px 0;
     }
-    .phone-row {
+    .input-group {
       display: flex;
-      gap: 10px;
-      margin-bottom: 18px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
-    select {
-      width: 95px;
-      padding: 12px 8px;
-      font-size: 15px;
-      border: 1.5px solid #e5e7eb;
+    .country-code {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      border: 1px solid #e2e8f0;
       border-radius: 8px;
-      background: #f9fafb;
-      color: #1f2937;
-      outline: none;
-    }
-    input {
-      flex: 1;
-      padding: 12px;
-      font-size: 15px;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 8px;
-      background: #f9fafb;
-      outline: none;
-      color: #1f2937;
-    }
-    input:focus, select:focus {
-      border-color: #25D366;
-      background: #ffffff;
-    }
-    .msg-group {
-      margin-bottom: 20px;
-    }
-    .msg-group input {
-      width: 100%;
-    }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
+      background: #f8fafc;
+      font-size: 14px;
       font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 10px;
+      color: #334155;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus {
+      border-color: #25D366;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 48px;
+      margin-bottom: 12px;
     }
     .btn-paste {
-      background-color: #f3f4f6;
-      color: #374151;
+      width: 100%;
+      padding: 10px;
+      background: #f1f5f9;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 12px;
     }
-    .btn-open {
-      background-color: #25D366;
+    .btn-send {
+      width: 100%;
+      padding: 14px;
+      background: #25D366;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
       color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
     }
-    .history-card {
-      margin-top: 24px;
-      border-top: 1px solid #f3f4f6;
-      padding-top: 16px;
+    .btn-send:active {
+      background: #20ba5a;
+    }
+    #history-container {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 400px;
     }
     .history-header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .history-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+    }
+    .btn-clear {
+      background: none;
+      border: none;
+      color: #ef4444;
       font-size: 12px;
       font-weight: 600;
-      color: #9ca3af;
-      text-transform: uppercase;
-      margin-bottom: 10px;
+      cursor: pointer;
     }
     .history-item {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: #f9fafb;
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: #374151;
+      font-size: 13px;
+      color: #1e293b;
       cursor: pointer;
+      border: 1px solid #f1f5f9;
+    }
+    .ad-container {
+      margin: 20px auto;
+      text-align: center;
+      width: 100%;
+      max-width: 300px;
+      min-height: 250px;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>Direct Message</h2>
+  <div class="card">
+    <h1>Direct Message</h1>
     <p class="subtitle">Chat on WhatsApp without saving contacts.</p>
 
-    <div class="phone-row">
-      <select id="countryCode">
-        <option value="91" selected>🇮🇳 +91</option>
-        <option value="1">🇺🇸 +1</option>
-        <option value="44">🇬🇧 +44</option>
-        <option value="971">🇦🇪 +971</option>
-        <option value="966">🇸🇦 +966</option>
-      </select>
-      <input type="tel" id="phoneNumber" placeholder="10-digit number">
-    </div>
-
-    <div class="msg-group">
-      <input type="text" id="message" placeholder="Optional prefilled message...">
-    </div>
-
-    <button class="btn btn-paste" onclick="pasteNumber()">📋 Paste Number</button>
-    <button class="btn btn-open" onclick="openWhatsApp()">💬 Open WhatsApp</button>
-
-    <div class="history-card" id="historySection" style="display:none;">
-      <div class="history-header">
-        <span>Recent Chats</span>
-        <span onclick="clearHistory()" style="cursor:pointer; color:#ef4444;">Clear</span>
+    <div class="input-group">
+      <div class="country-code">
+        <span>🇮🇳 +91</span>
       </div>
-      <div id="historyList"></div>
+      <input type="tel" id="phone" placeholder="10-digit number" maxlength="10" />
     </div>
+
+    <textarea id="message" placeholder="Optional prefilled message..."></textarea>
+
+    <button class="btn-paste" onclick="pasteNumber()">
+      📋 Paste Number
+    </button>
+
+    <button class="btn-send" onclick="sendWhatsApp()">
+      💬 Open WhatsApp
+    </button>
+  </div>
+
+  <div id="history-container" style="display: none;">
+    <div class="history-header">
+      <span class="history-title">Recent Numbers</span>
+      <button class="btn-clear" onclick="clearHistory()">Clear</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
+  <!-- Adsterra 300x250 Banner Placement -->
+  <div class="ad-container">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '9a370aa8344fedb2a5fd3061f59f8f30',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/9a370aa8344fedb2a5fd3061f59f8f30/invoke.js"></script>
   </div>
 
   <script>
-    const phoneInput = document.getElementById('phoneNumber');
-    const msgInput = document.getElementById('message');
-    const codeSelect = document.getElementById('countryCode');
-
-    loadHistory();
+    document.addEventListener("DOMContentLoaded", loadHistory);
 
     async function pasteNumber() {
       try {
         const text = await navigator.clipboard.readText();
-        let cleaned = text.replace(/[^\d]/g, '');
-        if (cleaned.startsWith('91') && cleaned.length > 10) {
-          codeSelect.value = '91';
-          cleaned = cleaned.slice(2);
-        }
-        phoneInput.value = cleaned;
+        const cleaned = text.replace(/[^0-9]/g, "");
+        const formatted = cleaned.length > 10 ? cleaned.slice(-10) : cleaned;
+        document.getElementById("phone").value = formatted;
       } catch (err) {
-        alert("Clipboard permission required.");
+        alert("Clipboard permission denied or unavailable.");
       }
     }
 
-    function openWhatsApp() {
-      let num = phoneInput.value.replace(/[^\d]/g, '');
-      const code = codeSelect.value;
-      const msg = encodeURIComponent(msgInput.value.trim());
+    function sendWhatsApp() {
+      const phoneInput = document.getElementById("phone").value.replace(/[^0-9]/g, "");
+      const message = encodeURIComponent(document.getElementById("message").value.trim());
 
-      if (!num || num.length < 5) {
-        alert("Enter a valid phone number.");
+      if (phoneInput.length !== 10) {
+        alert("Please enter a valid 10-digit mobile number.");
         return;
       }
 
-      const fullNumber = code + num;
-      saveToHistory(fullNumber);
+      saveNumber(phoneInput);
 
-      let url = 'https://wa.me/' + fullNumber;
-      if (msg) url += '?text=' + msg;
+      const url = `https://wa.me/91${phoneInput}${message ? `?text=${message}` : ""}`;
       window.location.href = url;
     }
 
-    function saveToHistory(fullNumber) {
-      let history = JSON.parse(localStorage.getItem('dchat_history') || '[]');
-      history = history.filter(item => item !== fullNumber);
-      history.unshift(fullNumber);
-      if (history.length > 4) history.pop();
-      localStorage.setItem('dchat_history', JSON.stringify(history));
+    function saveNumber(num) {
+      let history = JSON.parse(localStorage.getItem("dchat_history") || "[]");
+      history = history.filter(item => item !== num);
+      history.unshift(num);
+      if (history.length > 5) history.pop();
+      localStorage.setItem("dchat_history", JSON.stringify(history));
       loadHistory();
     }
 
     function loadHistory() {
-      const history = JSON.parse(localStorage.getItem('dchat_history') || '[]');
-      const container = document.getElementById('historySection');
-      const list = document.getElementById('historyList');
+      const history = JSON.parse(localStorage.getItem("dchat_history") || "[]");
+      const container = document.getElementById("history-container");
+      const list = document.getElementById("history-list");
 
       if (history.length === 0) {
-        container.style.display = 'none';
+        container.style.display = "none";
         return;
       }
 
-      container.style.display = 'block';
-      list.innerHTML = '';
+      container.style.display = "block";
+      list.innerHTML = "";
+
       history.forEach(num => {
-        const div = document.createElement('div');
-        div.className = 'history-item';
-        div.innerHTML = `<span>+${num}</span><span style="color:#25D366; font-weight:600;">Chat ›</span>`;
-        div.onclick = () => { window.location.href = 'https://wa.me/' + num; };
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.innerHTML = `<span>+91 ${num}</span><span>↗</span>`;
+        div.onclick = () => {
+          document.getElementById("phone").value = num;
+        };
         list.appendChild(div);
       });
     }
 
-    function clearHistory() {
-      localStorage.removeItem('dchat_history');
+     function clearHistory() {
+      localStorage.removeItem("dchat_history");
       loadHistory();
     }
   </script>
+
+  <!-- Adsterra Banner (300x250) -->
+  <div style="margin: 20px auto; text-align: center; width: 100%; max-width: 300px; min-height: 250px;">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '9a370aa8344fedb2a5fd3061f59f8f30',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/9a370aa8344fedb2a5fd3061f59f8f30/invoke.js"></script>
+  </div>
+
 </body>
 </html>
+   
