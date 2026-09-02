@@ -1,56 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>College Cutoff Checker</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-  body { background: #0f172a; color: #fff; padding: 20px; }
-  .card { max-width: 450px; margin: auto; background: #1e293b; padding: 20px; border-radius: 10px; }
-  h2 { color: #38bdf8; margin-bottom: 12px; font-size: 18px; }
-  label { font-size: 13px; color: #94a3b8; display: block; margin-top: 10px; }
-  input, select, button { width: 100%; padding: 12px; margin-top: 6px; border-radius: 6px; font-size: 14px; }
-  input, select { background: #0f172a; border: 1px solid #334155; color: #fff; outline: none; }
-  button { background: #38bdf8; color: #000; font-weight: bold; border: none; margin-top: 16px; cursor: pointer; }
-  #results { margin-top: 16px; }
-  .item { background: #0f172a; border-left: 4px solid #38bdf8; padding: 10px; margin-top: 8px; border-radius: 4px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D-Chat</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: #f4f5f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .header {
+      width: 100%;
+      background: #ffffff;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      font-size: 20px;
+      font-weight: 600;
+      color: #111827;
+    }
+    .container {
+      width: 90%;
+      max-width: 420px;
+      margin-top: 36px;
+      text-align: center;
+    }
+    h2 {
+      font-size: 22px;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    p.subtitle {
+      font-size: 13.5px;
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
+    .input-group {
+      margin-bottom: 22px;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 12px 6px;
+      font-size: 15px;
+      border: none;
+      border-bottom: 1.5px solid #9ca3af;
+      background: transparent;
+      outline: none;
+      color: #1f2937;
+    }
+    input:focus {
+      border-bottom-color: #25D366;
+    }
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: background-color 0.2s;
+    }
+    .btn-paste {
+      background-color: #d1d5db;
+      color: #1f2937;
+      margin-top: 10px;
+    }
+    .btn-paste:active {
+      background-color: #9ca3af;
+    }
+    .btn-open {
+      background-color: #d1d5db;
+      color: #1f2937;
+    }
+    .btn-open.active {
+      background-color: #25D366;
+      color: #ffffff;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-  <h2>College Eligibility Checker</h2>
-  <label>Enter Percentage (%)</label>
-  <input type="number" id="marks" placeholder="e.g. 72" min="35" max="100">
-  <label>Select Stream</label>
-  <select id="stream">
-    <option value="Science">Science</option>
-    <option value="Commerce">Commerce</option>
-    <option value="Arts">Arts</option>
-    <option value="Diploma">Diploma / Polytechnic</option>
-  </select>
-  <button onclick="check()">Find Eligible Colleges</button>
-  <div id="results"></div>
-</div>
-<script>
-  const colleges = [
-    { name: "City Junior College of Science", stream: "Science", min: 70 },
-    { name: "Government Polytechnic", stream: "Diploma", min: 55 },
-    { name: "National Commerce Academy", stream: "Commerce", min: 60 },
-    { name: "Dr. B.R. Memorial College", stream: "Arts", min: 45 }
-  ];
-  function check() {
-    const val = parseFloat(document.getElementById('marks').value);
-    const str = document.getElementById('stream').value;
-    const out = document.getElementById('results');
-    out.innerHTML = "";
-    if (!val) return alert("Enter marks first");
-    const matched = colleges.filter(c => c.stream === str && val >= c.min);
-    if (!matched.length) { out.innerHTML = "<p style='color:#ef4444;margin-top:10px;'>No matching colleges found.</p>"; return; }
-    matched.forEach(c => {
-      out.innerHTML += `<div class="item"><strong>${c.name}</strong><br><small>Stream: ${c.stream} | Cutoff: ${c.min}%</small></div>`;
+
+  <div class="header">D-Chat</div>
+
+  <div class="container">
+    <h2>D-Chat: Direct Message</h2>
+    <p class="subtitle">Chat on WhatsApp without saving contacts to your phone.</p>
+
+    <div class="input-group">
+      <input type="tel" id="phoneNumber" placeholder="Enter Number (e.g., 919876543210)">
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="message" placeholder="Optional initial message...">
+    </div>
+
+    <button class="btn btn-paste" onclick="pasteNumber()">Paste Copied Number</button>
+    <button class="btn btn-open" id="openBtn" onclick="openWhatsApp()">Open WhatsApp Chat</button>
+  </div>
+
+  <script>
+    const phoneInput = document.getElementById('phoneNumber');
+    const msgInput = document.getElementById('message');
+    const openBtn = document.getElementById('openBtn');
+
+    phoneInput.addEventListener('input', () => {
+      if (phoneInput.value.trim().length >= 7) {
+        openBtn.classList.add('active');
+      } else {
+        openBtn.classList.remove('active');
+      }
     });
-  }
-</script>
+
+    async function pasteNumber() {
+      try {
+        const text = await navigator.clipboard.readText();
+        const cleaned = text.replace(/[^\d]/g, '');
+        phoneInput.value = cleaned;
+        if (cleaned.length >= 7) openBtn.classList.add('active');
+      } catch (err) {
+        alert("Please allow clipboard access or type the number manually.");
+      }
+    }
+
+    function openWhatsApp() {
+      let num = phoneInput.value.replace(/[^\d]/g, '');
+      const msg = encodeURIComponent(msgInput.value.trim());
+
+      if (!num || num.length < 7) {
+        alert("Please enter a valid phone number with country code (e.g., 91 for India).");
+        return;
+      }
+
+      let url = 'https://wa.me/' + num;
+      if (msg) {
+        url += '?text=' + msg;
+      }
+
+      window.location.href = url;
+    }
+  </script>
 </body>
 </html>
