@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#25D366" />
   <title>D-Chat</title>
   <style>
     * {
@@ -106,6 +108,19 @@
     .btn-send:active {
       background: #20ba5a;
     }
+    .btn-install {
+      display: none;
+      width: 100%;
+      padding: 12px;
+      background: #0f172a;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      margin-top: 10px;
+    }
     #history-container {
       margin-top: 20px;
       width: 100%;
@@ -173,6 +188,10 @@
 
     <button class="btn-send" onclick="sendWhatsApp()">
       💬 Open WhatsApp
+    </button>
+
+    <button class="btn-install" id="installBtn">
+      ⬇ Install D-Chat App
     </button>
   </div>
 
@@ -264,6 +283,32 @@
       localStorage.removeItem("dchat_history");
       loadHistory();
     }
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+
+    // PWA Install Prompt Trigger
+    let deferredPrompt;
+    const installBtn = document.getElementById("installBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "block";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === "accepted") {
+          installBtn.style.display = "none";
+        }
+        deferredPrompt = null;
+      }
+    });
   </script>
 
 </body>
