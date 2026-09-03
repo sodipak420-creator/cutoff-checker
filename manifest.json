@@ -1,0 +1,16 @@
+{
+  "name": "D-Chat",
+  "short_name": "D-Chat",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f5f8",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1041/1041916.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
